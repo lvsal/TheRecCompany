@@ -1,12 +1,12 @@
 import javax.swing.*;
 import java.awt.event.*;
 
-public class custItemList extends JDialog {
+public class CustItemList extends JDialog {
     private JPanel contentPane;
     private JButton buttonOK;
     private JButton buttonCancel;
 
-    public custItemList() {
+    public CustItemList() {
         setContentPane(contentPane);
         setModal(true);
         getRootPane().setDefaultButton(buttonOK);
@@ -50,7 +50,7 @@ public class custItemList extends JDialog {
     }
 
     public static void main(String[] args) {
-        custItemList dialog = new custItemList();
+        CustItemList dialog = new CustItemList();
         dialog.pack();
         dialog.setVisible(true);
         System.exit(0);
