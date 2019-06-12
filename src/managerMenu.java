@@ -7,7 +7,7 @@ import java.util.LinkedList;
 
 
 public class ManagerMenu {
-    private JTabbedPane itemMenu;
+    private JTabbedPane tabbedMenus;
     private JPanel managerPanel;
     private JPanel itemPanel;
     private JTable customerTable;
@@ -19,6 +19,9 @@ public class ManagerMenu {
     private JTable saleTable;
     private JTable rentTable;
     private JButton buttonAdd;
+    private JTable empTable;
+    private JButton btnAddEmp;
+    private JTable courseTable;
     private JScrollPane scrollPanel;
     private JTable appointmentTable;
     private JButton signOutButton;
@@ -28,13 +31,15 @@ public class ManagerMenu {
     private DefaultTableModel model;
     private DefaultTableModel model2;
     private DefaultTableModel model3;
+    private DefaultTableModel model4;
+    private DefaultTableModel model5;
 
     private final static String customerInfo[] = {"Customer ID", "Name", "Phone", "Address", "City", "Province"};
 
     private final static String saleInfo[] = {"ItemID", "Name", "Price", "Stock"};
     private final static String rentInfo[] = {"ItemID", "Name", "Price", "Stock"};
-    private final static String atvInfo[] = {"VIN", "Model", "Price", "Stock", "Ground"};
-    private final static String bicycleInfo[] = {"Serial No.", "Model", "Price", "Stock", "Ground"};
+    private final static String empInfo[] = {"Employee ID", "Name", "Phone", "Address", "City", "Province", "Manager", "Username", "Type"};
+    private final static String courseInfo[] = {"Course ID", "Course Name", "Fee", "Instructor Name"};
 
 
     private final static String sqlURL = "jdbc:mysql://remotemysql.com:3306/h7euKF3cs2";
@@ -46,13 +51,19 @@ public class ManagerMenu {
     private final static String querySaleInfo = "Select * from FOR_SALE";
     private final static String queryRentInfo = "Select * from FOR_RENT";
 
+    private final static String queryEmpInfo = "Select * from EMPLOYEE";
+    private final static String queryType = "Select Type from USERINFO where username = ?";
+    private final static String queryManager = "Select EmpName from EMPLOYEE where EmpID = ?";
+
+
+
     private PreparedStatement ps;
 
 
     private Connection con;
     private ManagerMenu menu;
 
-    public ManagerMenu() {
+    public ManagerMenu(Connection connection) {
 
         menu = this;
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
@@ -60,9 +71,11 @@ public class ManagerMenu {
         int width = screenSize.width;
         frame.setSize(width / 2, height / 2);
 
-        con = createConnection();
+        con = connection;
         displayItems();
         displayCustomers();
+        displayEmployee();
+        displayCourses();
         frame.setContentPane(managerPanel);
         frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         frame.setLocationRelativeTo(null);
@@ -96,6 +109,8 @@ public class ManagerMenu {
                 con = createConnection();
                 refreshItems();
                 refreshCustomers();
+                refreshEmployees();
+                refreshCourses();
             }
         });
         btnLogout.addMouseListener(new MouseAdapter() {
@@ -107,7 +122,7 @@ public class ManagerMenu {
                         "Logout Confirmation", JOptionPane.YES_NO_OPTION,
                         JOptionPane.QUESTION_MESSAGE, null, null, null);
                 if (confirm == 0) {
-                    Login login = new Login();
+                    Login login = new Login(con);
                     frame.dispose();
                 }
             }
@@ -127,7 +142,6 @@ public class ManagerMenu {
             }
         });
 
-        // TODO: Open Item Edit Menu
         saleTable.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseReleased(MouseEvent e) {
@@ -141,7 +155,6 @@ public class ManagerMenu {
             }
         });
 
-        // TODO: Open Item Edit Menu
         rentTable.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseReleased(MouseEvent e) {
@@ -159,6 +172,28 @@ public class ManagerMenu {
             public void mouseReleased(MouseEvent e) {
                 super.mouseReleased(e);
                 EditItem newItem = new EditItem(con, menu);
+            }
+        });
+        btnAddEmp.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                super.mouseReleased(e);
+                EditEmployee newEmp = new EditEmployee(con, menu);
+            }
+        });
+        empTable.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                super.mouseReleased(e);
+                if (e.getClickCount() == 2) {
+                    int row = empTable.rowAtPoint(e.getPoint());
+                    int key = (int) empTable.getValueAt(row, 0);
+                    if (!((String) empTable.getValueAt(row, 8)).equals("Manager")) {
+                        String username = (String) empTable.getValueAt(row, 7);
+                        EditEmployee emp = new EditEmployee(con, key, menu, username);
+                    }
+                    e.consume();
+                }
             }
         });
     }
@@ -188,6 +223,24 @@ public class ManagerMenu {
         }
 
         rentTable = new JTable(model3) {
+            public boolean isCellEditable(int row, int column) { return false; }
+        };
+
+        model4 = new DefaultTableModel(0,0);
+        for (String e : empInfo) {
+            model4.addColumn(e);
+        }
+
+        empTable = new JTable(model4) {
+            public boolean isCellEditable(int row, int column) { return false; }
+        };
+
+        model5 = new DefaultTableModel(0, 0);
+        for (String c : courseInfo) {
+            model5.addColumn(c);
+        }
+
+        courseTable = new JTable(model5) {
             public boolean isCellEditable(int row, int column) { return false; }
         };
 
@@ -265,5 +318,74 @@ public class ManagerMenu {
         model.setRowCount(0);
         displayCustomers();
     }
+
+    private void displayEmployee() {
+        String type = "";
+        String manager = "";
+        PreparedStatement ps2;
+        PreparedStatement ps3;
+        ResultSet rs2;
+        ResultSet rs3;
+        try {
+            ps = con.prepareStatement(queryEmpInfo);
+            ResultSet rs = ps.executeQuery();
+            while(rs.next()) {
+                ps2 = con.prepareStatement(queryType);
+                ps2.setString(1, rs.getString(8));
+                rs2 = ps2.executeQuery();
+                while(rs2.next()) type = rs2.getString(1);
+
+                ps3 = con.prepareStatement(queryManager);
+                ps3.setInt(1, rs.getInt(7));
+                rs3 = ps3.executeQuery();
+                while(rs3.next()) manager = rs3.getString(1);
+
+                Object toAdd[] = {
+                        rs.getInt(1), rs.getString(2), rs.getString(3),
+                        rs.getString(5), rs.getString(6), rs.getString(4), manager, rs.getString(8),
+                        type
+                };
+                model4.addRow(toAdd);
+            }
+        } catch (Exception e) {
+            e.printStackTrace(new java.io.PrintStream(System.out));
+        }
+    }
+
+    protected void refreshEmployees() {
+        model4.setRowCount(0);
+        displayEmployee();
+    }
+
+    private final static String queryCourses = "Select * from COURSES";
+    private final static String queryInstructor = "Select EmpName FROM EMPLOYEE where EmpID = ?";
+    private void displayCourses() {
+        ResultSet rs;
+        ResultSet rs2;
+        String instructor = "";
+        try {
+            ps = con.prepareStatement(queryCourses);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                ps = con.prepareStatement(queryInstructor);
+                ps.setInt(1, rs.getInt(3));
+                rs2 = ps.executeQuery();
+                while (rs2.next()) instructor = rs2.getString(1);
+                Object toAdd[] = {
+                        rs.getInt(1), rs.getString(2), rs.getDouble(3), instructor
+                };
+                model5.addRow(toAdd);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace(new java.io.PrintStream(System.out));
+        }
+    }
+
+    protected void refreshCourses() {
+        model5.setRowCount(0);
+        displayCourses();
+    }
+
 
 }

@@ -76,7 +76,7 @@ public class EditItem {
             @Override
             public void windowClosing(WindowEvent e) {
                 int confirm = JOptionPane.showOptionDialog(
-                        null, "Are you sure that you want to close the window?",
+                        null, "Are you sure that you want to close this window?",
                         "Exit Confirmation", JOptionPane.YES_NO_OPTION,
                         JOptionPane.QUESTION_MESSAGE, null, null, null);
                 if (confirm == 0) {
@@ -147,6 +147,7 @@ public class EditItem {
                                 ps.setInt(1, key);
                             }
                             ps.executeUpdate();
+                            JOptionPane.showMessageDialog(null, "Item has been delete.");
                             menu.refreshItems();
                             frame.dispose();
                         } catch (Exception e3) {
@@ -191,7 +192,7 @@ public class EditItem {
             @Override
             public void mouseReleased(MouseEvent e) {
                 super.mouseReleased(e);
-                int option = JOptionPane.showConfirmDialog(null, "Proceed with changes?");
+                int option = JOptionPane.showConfirmDialog(null, "Create new item?");
                 switch (option) {
                     case 0:
                         String name = textItemName.getText();

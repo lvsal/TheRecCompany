@@ -1448,9 +1448,9 @@ StoreID</ColNames>
       <DataType>int(11)|0s</DataType>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <column id="351" parent="279" name="StoreID">
+    <column id="351" parent="279" name="Type">
       <Position>8</Position>
-      <DataType>int(11)|0s</DataType>
+      <DataType>varchar(15)|0s</DataType>
       <ColumnKind>normal</ColumnKind>
     </column>
     <index id="352" parent="279" name="EmpID">
@@ -1463,17 +1463,18 @@ StoreID</ColNames>
       <Unique>1</Unique>
       <Type>btree</Type>
     </index>
-    <index id="354" parent="279" name="idx_EMPLOYEE_EmpID">
+    <index id="354" parent="279" name="EmpID_3">
       <ColNames>EmpID</ColNames>
       <Unique>1</Unique>
       <Type>btree</Type>
     </index>
-    <index id="355" parent="279" name="EmpIdfk">
-      <ColNames>ManagerID</ColNames>
+    <index id="355" parent="279" name="idx_EMPLOYEE_EmpID">
+      <ColNames>EmpID</ColNames>
+      <Unique>1</Unique>
       <Type>btree</Type>
     </index>
-    <index id="356" parent="279" name="StoreID">
-      <ColNames>StoreID</ColNames>
+    <index id="356" parent="279" name="EmpIdfk">
+      <ColNames>ManagerID</ColNames>
       <Type>btree</Type>
     </index>
     <key id="357" parent="279" name="PRIMARY">
@@ -1489,21 +1490,19 @@ StoreID</ColNames>
       <ColNames>EmpID</ColNames>
       <UnderlyingIndexName>EmpID_2</UnderlyingIndexName>
     </key>
-    <key id="360" parent="279" name="idx_EMPLOYEE_EmpID">
+    <key id="360" parent="279" name="EmpID_3">
+      <ColNames>EmpID</ColNames>
+      <UnderlyingIndexName>EmpID_3</UnderlyingIndexName>
+    </key>
+    <key id="361" parent="279" name="idx_EMPLOYEE_EmpID">
       <ColNames>EmpID</ColNames>
       <UnderlyingIndexName>idx_EMPLOYEE_EmpID</UnderlyingIndexName>
     </key>
-    <foreign-key id="361" parent="279" name="EmpIdfk">
+    <foreign-key id="362" parent="279" name="EmpIdfk">
       <ColNames>ManagerID</ColNames>
       <RefSchemaName>h7euKF3cs2</RefSchemaName>
       <RefTableName>employee</RefTableName>
       <RefColNames>empid</RefColNames>
-    </foreign-key>
-    <foreign-key id="362" parent="279" name="EMPLOYEE_ibfk_1">
-      <ColNames>StoreID</ColNames>
-      <RefSchemaName>h7euKF3cs2</RefSchemaName>
-      <RefTableName>STORE</RefTableName>
-      <RefColNames>storeid</RefColNames>
     </foreign-key>
     <column id="363" parent="280" name="ItemID">
       <Position>1</Position>
@@ -2075,51 +2074,65 @@ Username</ColNames>
       <NotNull>1</NotNull>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <column id="468" parent="291" name="Username">
+    <column id="468" parent="291" name="username">
       <Position>2</Position>
       <DataType>varchar(20)|0s</DataType>
       <NotNull>1</NotNull>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <index id="469" parent="291" name="Username">
-      <ColNames>Username</ColNames>
+    <index id="469" parent="291" name="EmpID">
+      <ColNames>EmpID</ColNames>
+      <Unique>1</Unique>
       <Type>btree</Type>
     </index>
-    <key id="470" parent="291" name="PRIMARY">
+    <index id="470" parent="291" name="username">
+      <ColNames>username</ColNames>
+      <Unique>1</Unique>
+      <Type>btree</Type>
+    </index>
+    <key id="471" parent="291" name="PRIMARY">
       <NameSurrogate>1</NameSurrogate>
       <ColNames>EmpID
-Username</ColNames>
+username</ColNames>
       <Primary>1</Primary>
     </key>
-    <foreign-key id="471" parent="291" name="USEREMP_ibfk_1">
+    <key id="472" parent="291" name="EmpID">
+      <ColNames>EmpID</ColNames>
+      <UnderlyingIndexName>EmpID</UnderlyingIndexName>
+    </key>
+    <key id="473" parent="291" name="username">
+      <ColNames>username</ColNames>
+      <UnderlyingIndexName>username</UnderlyingIndexName>
+    </key>
+    <foreign-key id="474" parent="291" name="USEREMP_ibfk_1">
       <ColNames>EmpID</ColNames>
       <RefSchemaName>h7euKF3cs2</RefSchemaName>
       <RefTableName>EMPLOYEE</RefTableName>
       <RefColNames>empid</RefColNames>
     </foreign-key>
-    <foreign-key id="472" parent="291" name="USEREMP_ibfk_2">
-      <ColNames>Username</ColNames>
+    <foreign-key id="475" parent="291" name="USEREMP_ibfk_2">
+      <ColNames>username</ColNames>
       <RefSchemaName>h7euKF3cs2</RefSchemaName>
       <RefTableName>USERINFO</RefTableName>
       <RefColNames>username</RefColNames>
     </foreign-key>
-    <column id="473" parent="292" name="username">
+    <column id="476" parent="292" name="username">
       <Position>1</Position>
       <DataType>varchar(20)|0s</DataType>
       <NotNull>1</NotNull>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <column id="474" parent="292" name="password">
+    <column id="477" parent="292" name="password">
       <Position>2</Position>
       <DataType>varchar(12)|0s</DataType>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <column id="475" parent="292" name="type">
+    <column id="478" parent="292" name="type">
       <Position>3</Position>
       <DataType>varchar(12)|0s</DataType>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <key id="476" parent="292" name="PRIMARY">
+    <key id="479" parent="292" name="PRIMARY">
       <NameSurrogate>1</NameSurrogate>
       <ColNames>username</ColNames>
       <Primary>1</Primary>
