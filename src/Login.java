@@ -72,7 +72,7 @@ public class Login extends JDialog {
 
                     while (rs.next()) type = rs.getString(1);
 
-                    if (type.equals("Manager")) {
+                    if (type.equals("Manager") || type.equals("Admin")) {
                         ManagerMenu menu = new ManagerMenu(con);
                         frame.dispose();
                     } else if (type.equals("Employee")) {

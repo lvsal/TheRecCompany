@@ -22,6 +22,7 @@ public class ManagerMenu {
     private JTable empTable;
     private JButton btnAddEmp;
     private JTable courseTable;
+    private JButton btnCourse;
     private JScrollPane scrollPanel;
     private JTable appointmentTable;
     private JButton signOutButton;
@@ -39,10 +40,10 @@ public class ManagerMenu {
     private final static String saleInfo[] = {"ItemID", "Name", "Price", "Stock"};
     private final static String rentInfo[] = {"ItemID", "Name", "Price", "Stock"};
     private final static String empInfo[] = {"Employee ID", "Name", "Phone", "Address", "City", "Province", "Manager", "Username", "Type"};
-    private final static String courseInfo[] = {"Course ID", "Course Name", "Fee", "Instructor Name"};
+    private final static String courseInfo[] = {"Course ID", "Course Name", "Fee", "Instructor Name", "Available"};
 
 
-    private final static String sqlURL = "jdbc:mysql://remotemysql.com:3306/h7euKF3cs2";
+    private final static String sqlURL = "jdbc:mysql://remotemysql.com:3306/h7euKF3cs2?useSSL=false";
     private final static String sqlUsername = "h7euKF3cs2";
     private final static String sqlPassword = "2QL01X7xCG";
 
@@ -192,6 +193,26 @@ public class ManagerMenu {
                         String username = (String) empTable.getValueAt(row, 7);
                         EditEmployee emp = new EditEmployee(con, key, menu, username);
                     }
+                    e.consume();
+                }
+            }
+        });
+        btnCourse.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                super.mouseReleased(e);
+                EditCourses course = new EditCourses(con, menu);
+            }
+        });
+
+        courseTable.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                super.mouseReleased(e);
+                if (e.getClickCount() == 2) {
+                    int row = courseTable.rowAtPoint(e.getPoint());
+                    int key = (int) courseTable.getValueAt(row, 0);
+                    EditCourses courses2 = new EditCourses(con, key, menu);
                     e.consume();
                 }
             }
@@ -363,16 +384,22 @@ public class ManagerMenu {
         ResultSet rs;
         ResultSet rs2;
         String instructor = "";
+        String available = "";
         try {
             ps = con.prepareStatement(queryCourses);
             rs = ps.executeQuery();
             while (rs.next()) {
                 ps = con.prepareStatement(queryInstructor);
-                ps.setInt(1, rs.getInt(3));
+                ps.setInt(1, rs.getInt(4));
                 rs2 = ps.executeQuery();
                 while (rs2.next()) instructor = rs2.getString(1);
+                if (rs.getBoolean(5)) {
+                    available = "Yes";
+                } else {
+                    available = "No";
+                }
                 Object toAdd[] = {
-                        rs.getInt(1), rs.getString(2), rs.getDouble(3), instructor
+                        rs.getInt(1), rs.getString(2), rs.getDouble(3), instructor, available
                 };
                 model5.addRow(toAdd);
             }
