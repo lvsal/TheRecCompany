@@ -196,7 +196,7 @@ public class EditCourses extends JDialog {
                 double fee = Double.parseDouble(textFee.getText());
                 boolean available = false;
                 if(((String) availableBox.getSelectedItem()).equals("Yes")) available = true;
-                int option = JOptionPane.showConfirmDialog(null, "Add new course?");
+                int option = JOptionPane.showConfirmDialog(null, "Proceed with changes?");
                 switch (option) {
                     case 0:
                         try {
@@ -224,7 +224,7 @@ public class EditCourses extends JDialog {
                             frame.dispose();
 
                         } catch (Exception e2) {
-                            JOptionPane.showMessageDialog(null, "Adding new course has failed.");
+                            JOptionPane.showMessageDialog(null, "Editing course has failed.");
                             e2.printStackTrace(new java.io.PrintStream(System.out));
                         }
                         break;

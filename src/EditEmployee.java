@@ -181,7 +181,6 @@ public class EditEmployee extends JDialog {
 
 
     public EditEmployee(Connection con, int key, ManagerMenu menu, String username) {
-        System.out.println("Editing");
         this.con = con;
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         int height = screenSize.height;
@@ -323,9 +322,9 @@ public class EditEmployee extends JDialog {
                             PreparedStatement ps3 = con.prepareStatement(queryDelUser);
                             ps2.setInt(1, key);
                             ps3.setString(1, username);
+                            removeInstructor(key, menu);
                             ps2.executeUpdate();
                             ps3.executeUpdate();
-
                             JOptionPane.showMessageDialog(null, "Employee has been successfully deleted.");
                             menu.refreshEmployees();
                             frame.dispose();

@@ -84,7 +84,7 @@
                   <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                 </constraints>
                 <properties>
-                  <text value="Name:    "/>
+                  <text value="Name:      "/>
                 </properties>
               </component>
               <component id="bbe02" class="javax.swing.JFormattedTextField" binding="textName">
@@ -115,7 +115,7 @@
                   </grid>
                 </constraints>
                 <properties>
-                  <text value="Phone: "/>
+                  <text value="Phone:     "/>
                 </properties>
               </component>
               <component id="5bd1a" class="javax.swing.JFormattedTextField" binding="textPhone">
@@ -144,7 +144,7 @@
                   <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                 </constraints>
                 <properties>
-                  <text value="Street:"/>
+                  <text value="Street:      "/>
                 </properties>
               </component>
               <component id="e6f2d" class="javax.swing.JFormattedTextField" binding="textStreet">
@@ -173,7 +173,7 @@
                   <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                 </constraints>
                 <properties>
-                  <text value="City:       "/>
+                  <text value="City:         "/>
                 </properties>
               </component>
               <component id="6b85f" class="javax.swing.JFormattedTextField" binding="textCity">
@@ -202,7 +202,7 @@
                   <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                 </constraints>
                 <properties>
-                  <text value="Province:"/>
+                  <text value="Province:  "/>
                 </properties>
               </component>
               <component id="9cdcb" class="javax.swing.JFormattedTextField" binding="textProvince">
@@ -260,7 +260,7 @@
                   <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                 </constraints>
                 <properties>
-                  <text value="Password:"/>
+                  <text value="Password: "/>
                 </properties>
               </component>
               <component id="dcd0c" class="javax.swing.JPasswordField" binding="textPassword">
@@ -286,7 +286,7 @@
                   <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                 </constraints>
                 <properties>
-                  <text value="Confirm:"/>
+                  <text value="Confirm:   "/>
                 </properties>
               </component>
               <component id="12926" class="javax.swing.JPasswordField" binding="textConfirm">
@@ -312,7 +312,7 @@
                   <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                 </constraints>
                 <properties>
-                  <text value="Manager:"/>
+                  <text value="Manager:  "/>
                 </properties>
               </component>
               <component id="50950" class="javax.swing.JButton" binding="btnMngr">
@@ -351,7 +351,7 @@
                   <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                 </constraints>
                 <properties>
-                  <text value="Type:"/>
+                  <text value="Type:        "/>
                 </properties>
               </component>
               <component id="f07a9" class="javax.swing.JComboBox" binding="typeBox">
