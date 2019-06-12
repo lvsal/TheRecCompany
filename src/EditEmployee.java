@@ -42,13 +42,13 @@ public class EditEmployee extends JDialog {
     private final static String queryFKC0 = "SET FOREIGN_KEY_CHECKS = 0";
     private final static String queryFKC1 = "SET FOREIGN_KEY_CHECKS = 1";
     private final static String queryUserCreate = "Insert into USERINFO (username, password, type) values (?, ?, ?)";
-    private final static String queryUserEmp = "Insert into USEREMP (EmpID, username) values (? , ?)";
-    private final static String queryEmpID = "SELECT EmpID from EMPLOYEE where EmpName = ? AND EmpPhone = ? AND EmpStreet = ?";
     private final static String queryUserExists = "Select username from USERINFO where username = ?";
-    private final static String queryEmpInfo = "Select * from EMPLOYEE where EmpID = ?";
     private final static String queryDelEmp = "Delete from EMPLOYEE where EmpID = ?";
     private final static String queryDelUser = "Delete from USERINFO where username = ?";
     private final static String queryType = "Select Type from USERINFO where username = ?";
+    private final static String queryUpdateType = "Update USERINFO set Type = ? Where username = ?";
+
+    private final static String queryUpdateCourses = "Update COURSES set InstructorID = NULL where InstructorID = ?";
 
 
 
@@ -181,6 +181,7 @@ public class EditEmployee extends JDialog {
 
 
     public EditEmployee(Connection con, int key, ManagerMenu menu, String username) {
+        System.out.println("Editing");
         this.con = con;
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         int height = screenSize.height;
@@ -192,6 +193,13 @@ public class EditEmployee extends JDialog {
             ps.setString(1, username);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) type = rs.getString(1);
+            if (type.equals("Employee")) {
+                typeBox.setSelectedIndex(0);
+            } else if (type.equals("Manager")) {
+                typeBox.setSelectedIndex(1);
+            } else {
+                typeBox.setSelectedIndex(2);
+            }
             ps = con.prepareStatement(queryEditInfo);
             ps.setInt(1, key);
             rs = ps.executeQuery();
@@ -249,55 +257,55 @@ public class EditEmployee extends JDialog {
                 String street = textStreet.getText();
                 String city = textCity.getText();
                 String province = textProvince.getText();
-                String username = textUsername.getText().toLowerCase();
-                String password = String.valueOf(textPassword.getPassword());
-                String confirm = String.valueOf(textConfirm.getPassword());
-                String type = typeBox.getSelectedItem().toString();
-
-                if (!password.equals(confirm)) {
-                    JOptionPane.showMessageDialog(null, "Password must match.");
-                } else {
-                    int option = JOptionPane.showConfirmDialog(null, "Proceed with changes?");
-                    switch (option) {
-                        case 0:
-                            try {
-                                if (managerID[0] > -1) {
-                                    ps = con.prepareStatement(queryEdit);
-                                } else {
-                                    ps = con.prepareStatement(queryEdit2);
-                                }
-
-
-                                PreparedStatement ps3 = con.prepareStatement(queryFKC0);
-
-                                ps.setString(1, name);
-                                ps.setString(2, phone);
-                                ps.setString(3, province);
-                                ps.setString(4, street);
-                                ps.setString(5, city);
-                                if (managerID[0] > -1) {
-                                    ps.setInt(6, managerID[0]);
-                                    ps.setInt(7, key);
-                                } else {
-                                    ps.setInt(6, key);
-                                }
-
-
-                                ps3.executeUpdate();
-                                ps.executeUpdate();
-
-                                ps3 = con.prepareStatement(queryFKC1);
-                                ps3.executeUpdate();
-
-
-                                menu.refreshEmployees();
-                                frame.dispose();
-                            } catch (Exception e3) {
-                                JOptionPane.showMessageDialog(null, "Editing employee has failed.");
-                                e3.printStackTrace(new java.io.PrintStream(System.out));
+                String type = (String) typeBox.getSelectedItem();
+                int option = JOptionPane.showConfirmDialog(null, "Proceed with changes?");
+                switch (option) {
+                    case 0:
+                        try {
+                            if (managerID[0] > -1) {
+                                ps = con.prepareStatement(queryEdit);
+                            } else {
+                                ps = con.prepareStatement(queryEdit2);
                             }
-                            break;
-                    }
+
+
+                            PreparedStatement ps3 = con.prepareStatement(queryFKC0);
+
+                            ps.setString(1, name);
+                            ps.setString(2, phone);
+                            ps.setString(3, province);
+                            ps.setString(4, street);
+                            ps.setString(5, city);
+                            if (managerID[0] > -1) {
+                                ps.setInt(6, managerID[0]);
+                                ps.setInt(7, key);
+                            } else {
+                                ps.setInt(6, key);
+                            }
+
+                            PreparedStatement ps2 = con.prepareStatement(queryUpdateType);
+                            ps2.setString(1, type);
+                            ps2.setString(2, username);
+                            ps2.executeUpdate();
+
+                            ps3.executeUpdate();
+                            ps.executeUpdate();
+
+                            ps3 = con.prepareStatement(queryFKC1);
+                            ps3.executeUpdate();
+
+                            if (!type.equals("Instructor")) {
+                                removeInstructor(key, menu);
+                            }
+
+                            menu.refreshEmployees();
+                            frame.dispose();
+                        } catch (Exception e3) {
+                            JOptionPane.showMessageDialog(null, "Editing employee has failed.");
+                            e3.printStackTrace(new java.io.PrintStream(System.out));
+                        }
+                        break;
+
 
                 }
 
@@ -342,5 +350,13 @@ public class EditEmployee extends JDialog {
                 ListManagers list = new ListManagers(con, labelMngr, managerID);
             }
         });
+    }
+
+    private void removeInstructor(int key, ManagerMenu menu) throws Exception {
+
+        PreparedStatement ps = con.prepareStatement(queryUpdateCourses);
+        ps.setInt(1, key);
+        ps.executeUpdate();
+        menu.refreshCourses();
     }
 }

@@ -106,6 +106,7 @@ public class EditCustInfo extends JDialog {
             @Override
             public void mouseReleased(MouseEvent e) {
                 super.mouseReleased(e);
+                frame.dispose();
             }
         });
     }
