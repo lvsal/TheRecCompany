@@ -90,6 +90,7 @@ public class EditCustInfo extends JDialog {
                             ps.setString(5, city);
                             ps.setInt(6, key);
                             ps.executeUpdate();
+
                         } catch (Exception e2) {
                             e2.printStackTrace(new java.io.PrintStream(System.out));
                         }

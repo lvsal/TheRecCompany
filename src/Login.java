@@ -13,7 +13,6 @@ public class Login extends JDialog {
     private JPanel outer;
 
 
-
     final static String sqlLogin = "select u.type from USERINFO as u where u.username = ? AND u.password = ?";
     private PreparedStatement ps;
 
@@ -29,8 +28,6 @@ public class Login extends JDialog {
         frame.setVisible(true);
 
         Connection con = createConnection();
-
-
 
         // call onCancel() when cross is clicked
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
@@ -68,11 +65,26 @@ public class Login extends JDialog {
                         ManagerMenu menu = new ManagerMenu();
                         con.close();
                         frame.dispose();
+                    }else if (type.equals("Customer")){
+                        CustomerMenu menu = new CustomerMenu(username);
+                        con.close();
+                        frame.dispose();
+                    }else if (type.equals("Employee")){
+                        EmployeeMenu menu = new EmployeeMenu();
+                        con.close();
+                        frame.dispose();
                     }
 
                 } catch (Exception e2) {
                     e2.printStackTrace(new java.io.PrintStream(System.out));
                 }
+            }
+        });
+        btnCreate.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                CreateCustomer create = new CreateCustomer();
+                frame.dispose();
             }
         });
     }
