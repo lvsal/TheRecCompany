@@ -1,6 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.PrintStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -36,7 +37,6 @@ public class EditItem {
     private PreparedStatement ps = null;
 
 
-
     public EditItem(Connection con, int key, ManagerMenu menu, String type) {
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         int height = screenSize.height;
@@ -69,7 +69,7 @@ public class EditItem {
                 textStock.setText(rs.getString(4));
             }
         } catch (Exception e) {
-            e.printStackTrace(new java.io.PrintStream(System.out));
+            e.printStackTrace(new PrintStream(System.out));
         }
 
         WindowListener exitListener = new WindowAdapter() {
@@ -99,7 +99,7 @@ public class EditItem {
                         try {
                             if (type.equals("rent")) {
                                 ps = con.prepareStatement(rentUpdate);
-                                ps.setString(1 , name);
+                                ps.setString(1, name);
                                 ps.setInt(2, stock);
                                 ps.setDouble(3, price);
                                 ps.setInt(4, key);
@@ -112,7 +112,7 @@ public class EditItem {
                             }
                             ps.executeUpdate();
                         } catch (Exception e2) {
-                            e2.printStackTrace(new java.io.PrintStream(System.out));
+                            e2.printStackTrace(new PrintStream(System.out));
                         }
                         menu.refreshItems();
                         frame.dispose();
@@ -150,7 +150,7 @@ public class EditItem {
                             menu.refreshItems();
                             frame.dispose();
                         } catch (Exception e3) {
-                            e3.printStackTrace(new java.io.PrintStream(System.out));
+                            e3.printStackTrace(new PrintStream(System.out));
                         }
                         break;
                 }
@@ -205,12 +205,12 @@ public class EditItem {
                                 ps = con.prepareStatement(newSale);
                             }
 
-                            ps.setString(1 , name);
+                            ps.setString(1, name);
                             ps.setInt(2, stock);
                             ps.setDouble(3, price);
                             ps.executeUpdate();
                         } catch (Exception e2) {
-                            e2.printStackTrace(new java.io.PrintStream(System.out));
+                            e2.printStackTrace(new PrintStream(System.out));
                         }
                         menu.refreshItems();
                         frame.dispose();

@@ -1,3 +1,4 @@
+import java.io.PrintStream;
 import java.sql.*;
 
 import javax.swing.*;
@@ -50,7 +51,7 @@ public class EditCustInfo extends JDialog {
                 textCity.setText(rs.getString(6));
             }
         } catch (Exception e) {
-            e.printStackTrace(new java.io.PrintStream(System.out));
+            e.printStackTrace(new PrintStream(System.out));
         }
 
         WindowListener exitListener = new WindowAdapter() {
@@ -91,7 +92,7 @@ public class EditCustInfo extends JDialog {
                             ps.setInt(6, key);
                             ps.executeUpdate();
                         } catch (Exception e2) {
-                            e2.printStackTrace(new java.io.PrintStream(System.out));
+                            e2.printStackTrace(new PrintStream(System.out));
                         }
                         menu.refreshCustomers();
                         frame.dispose();
@@ -109,4 +110,5 @@ public class EditCustInfo extends JDialog {
             }
         });
     }
+
 }
