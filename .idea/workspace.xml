@@ -1,15 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="0ff62c80-bf69-459a-9f2f-6b6714e67ac4" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/7f88817d-790d-47e2-80f1-0773cb64f84b.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/7f88817d-790d-47e2-80f1-0773cb64f84b.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/RecreationCompany.iml" beforeDir="false" afterPath="$PROJECT_DIR$/RecreationCompany.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/CustomerMenu.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/CustomerMenu.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/EmployeeMenu.form" beforeDir="false" afterPath="$PROJECT_DIR$/src/EmployeeMenu.form" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/EmployeeMenu.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/EmployeeMenu.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Login.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Login.java" afterDir="false" />
-    </list>
+    <list default="true" id="0ff62c80-bf69-459a-9f2f-6b6714e67ac4" name="Default Changelist" comment="" />
     <ignored path="$PROJECT_DIR$/out/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -145,12 +137,12 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1560667736505</updated>
-      <workItem from="1560667737879" duration="13271000" />
+      <workItem from="1560667737879" duration="13565000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="13271000" />
+    <option name="totallyTimeSpent" value="13565000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="23" width="1280" height="730" extended-state="6" />
