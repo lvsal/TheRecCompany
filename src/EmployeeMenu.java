@@ -17,6 +17,8 @@ public class EmployeeMenu {
 
     private Connection con;
     private EmployeeMenu menu;
+    private int instID;
+    private  String username;
 
     private JTabbedPane tabbedPane1;
     private JPanel EmployeePanel;
@@ -32,6 +34,8 @@ public class EmployeeMenu {
     private JTable CourseTransTable;
     private JButton refreshButton;
     private JButton logOutButton;
+    private JTable TeachingTable;
+    private JPanel teach;
 
     private JFrame frame = new JFrame("Employee Menu");
 
@@ -42,14 +46,17 @@ public class EmployeeMenu {
     private DefaultTableModel model5;
     private DefaultTableModel model6;
     private DefaultTableModel model7;
+    private DefaultTableModel model8;
+    private boolean inst = false;
 
 
     private final static String saleInfo[] = {"ItemID", "Name", "Price", "Stock"};
     private final static String rentInfo[] = {"ItemID", "Name", "Price", "Stock"};
     private final static String AvailCourses[] = {"CourseID", "Name", "Fee", "InstructorID", "Ground"};
     private final static String PastCourses[] = {"CourseID", "Name", "Fee", "InstructorID", "Ground"};
+    private final static String teaching[] = {"CourseID", "Name", "Ground"};
     private final static String CourseTrans[] = {"CourseID", "CustomerID", "TransID", "Price", "TransDate"};
-    private final static String RentTrans[] = {"ItemID", "CustomerID", "TransID", "Price", "Quantity", "TransDate"};
+    private final static String RentTrans[] = {"ItemID", "CustomerID", "TransID", "Price", "Quantity", "TransDate", "Duration"};
     private final static String SaleTrans[] = {"ItemID", "CustomerID", "TransID", "Price", "Quantity", "TransDate"};
 
 
@@ -58,6 +65,8 @@ public class EmployeeMenu {
     private final static String sqlPassword = "2QL01X7xCG";
 
     private final static String querygroundloc = "Select Location from GROUNDS where Ground=?";
+    private final static String queryteaching = "Select * from COURSES where Available=1 AND InstructorID=?";
+    private final static String queryinstID = "Select EmpID from EMPLOYEE where username =?";
 
     private final static String querySaleInfo = "Select * from FOR_SALE";
     private final static String queryRentInfo = "Select * from FOR_RENT";
@@ -70,14 +79,21 @@ public class EmployeeMenu {
     private final static String updateRentSale = "Update FOR_RENT set Stock=? where ItemID=?";
 
 
-    public EmployeeMenu() {
+    public EmployeeMenu(Connection c, String user, String type) {
+        con = c;
         menu = this;
+        username = user;
+        if (type.equals("Instructor")){
+            inst = true;
+        }else{
+            tabbedPane3.remove(teach);
+        }
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         int height = screenSize.height;
         int width = screenSize.width;
         frame.setSize(width / 2, height / 2);
 
-        con = createConnection();
+//        con = createConnection();
         displayItems();
         frame.setContentPane(EmployeePanel);
         frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
@@ -109,7 +125,6 @@ public class EmployeeMenu {
             @Override
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
-                con = createConnection();
                 refreshItems();
             }
         });
@@ -191,6 +206,18 @@ public class EmployeeMenu {
                 }
             }
         });
+
+        TeachingTable.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                super.mouseReleased(e);
+                if (e.getClickCount() == 2) {
+                    int row = TeachingTable.rowAtPoint(e.getPoint());
+                    int courseid = (int) TeachingTable.getValueAt(row, 0);
+                    ListStudents stu_list = new ListStudents(con, instID, courseid);
+                }
+            }
+        });
     }
 
     //    private DefaultTableModel model8;
@@ -267,23 +294,20 @@ public class EmployeeMenu {
             model7.addColumn(r);
         }
 
-        CourseTransTable = new JTable(model6) {
+        CourseTransTable = new JTable(model7) {
             public boolean isCellEditable(int row, int column) {
                 return false;
             }
         };
-    }
 
-
-    private Connection createConnection() {
-        try {
-            Class.forName("com.mysql.jdbc.Driver");
-            Connection con = DriverManager.getConnection(sqlURL, sqlUsername, sqlPassword);
-            return con;
-        } catch (Exception e) {
-            e.printStackTrace(new PrintStream(System.out));
+        model8 = new DefaultTableModel(0, 0);
+        for (String l : teaching){
+            model8.addColumn(l);
         }
-        return null;
+
+        TeachingTable = new JTable(model8) {
+            public boolean isCellEditable(int row, int column) { return false; }
+        };
     }
 
     protected void refreshItems() {
@@ -294,6 +318,7 @@ public class EmployeeMenu {
         model5.setRowCount(0);
         model6.setRowCount(0);
         model7.setRowCount(0);
+        model8.setRowCount(0);
         displayItems();
     }
 
@@ -360,21 +385,46 @@ public class EmployeeMenu {
             while (rs.next()) {
                 Object toAdd[] = {
                         rs.getInt(1), rs.getInt(2), rs.getInt(3), rs.getDouble(4),
-                        rs.getInt(5), rs.getTimestamp(6)
+                        rs.getInt(5), rs.getTimestamp(6), rs.getInt(7)
                 };
                 model6.addRow(toAdd);
             }
             ps = con.prepareStatement(queryCourTrans);
             rs = ps.executeQuery();
             while (rs.next()) {
+
                 Object toAdd[] = {
                         rs.getInt(1), rs.getInt(2), rs.getInt(3), rs.getDouble(4),
                         rs.getTimestamp(5)
                 };
                 model7.addRow(toAdd);
             }
-
-
+            if(inst) {
+                ps = con.prepareStatement(queryinstID);
+                ps.setString(1, username);
+                rs = ps.executeQuery();
+//            JOptionPane.showMessageDialog(frame, "ID =");
+                while (rs.next()) {
+                    instID = rs.getInt(1);
+//                JOptionPane.showMessageDialog(frame, "ID = "+instID);
+                }
+                ps = con.prepareStatement(queryteaching);
+                ps.setInt(1, instID);
+                rs = ps.executeQuery();
+                while (rs.next()) {
+                    ps2 = con.prepareStatement(querygroundloc);
+                    ps2.setInt(1, rs.getInt(6));
+                    ResultSet rs2 = ps2.executeQuery();
+                    String loc = " ";
+                    while (rs2.next()) {
+                        loc = rs2.getString(1);
+                    }
+                    Object toAdd[] = {
+                            rs.getInt(1), rs.getString(2), loc
+                    };
+                    model8.addRow(toAdd);
+                }
+            }
         } catch (Exception e) {
             e.printStackTrace(new PrintStream(System.out));
         }

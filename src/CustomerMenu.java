@@ -1,5 +1,7 @@
 
 
+import com.sun.codemodel.internal.JOp;
+
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
@@ -34,7 +36,7 @@ public class CustomerMenu {
     private final static String saleInfo[] = {"ItemID", "Name", "Price", "Stock"};
     private final static String rentInfo[] = {"ItemID", "Name", "Price", "Stock"};
     private final static String courseInfo[] = {"CourseID", "CourseName", "Fee", "Ground"};
-    private final static String TransRentInfo[] = {"ItemID", "TransID", "Price", "Quantity", "TransDate"};
+    private final static String TransRentInfo[] = {"ItemID", "TransID", "Price", "Quantity", "TransDate", "Duration"};
     private final static String TransSaleInfo[] = {"ItemID", "TransID", "Price", "Quantity", "TransDate"};
     private final static String TransCoursesInfo[] = {"CourseID", "TransID", "Price", "TransDate"};
 
@@ -57,23 +59,26 @@ public class CustomerMenu {
     //    private final static String querySalePrice = "Select * from FOR_SALE where ItemID=?";
 //    private final static String queryRentPrice = "Select * from FOR_RENT where ItemID=?";
     private final static String querygroundloc = "Select Location from GROUNDS where Ground=?";
-    private final static String disablefk = "SET FOREIGN_KEY_CHECKS = 0";
-    private final static String enablefk = "SET FOREIGN_KEY_CHECKS = 1";
+//    private final static String disablefk = "SET FOREIGN_KEY_CHECKS = 0";
+//    private final static String enablefk = "SET FOREIGN_KEY_CHECKS = 1";
     private final static String saleTransInsert = "insert into TRANSACTION_SALE (ItemID, CustomerID, Price, Quantity, TransDate) values (?, ?, ?, ?, ?)";
-    private final static String rentTransInsert = "insert into TRANSACTION_RENT (ItemID, CustomerID, Price, Quantity, TransDate) values (?, ?, ?, ?, ?)";
+    private final static String rentTransInsert = "insert into TRANSACTION_RENT (ItemID, CustomerID, Price, Quantity, TransDate, Duration) values (?, ?, ?, ?, ?, ?)";
     private final static String courTransInsert = "insert into TRANSACTION_COURSES (CourseID, CustomerID, Price, TransDate) values (?, ?, ?, ?)";
+    private final static String checkifenrolled = "select COUNT(*) from TRANSACTION_COURSES where CustomerID=? AND CourseID=?";
 
-    private final static String updateRentTable = "insert into RENTS (ItemID, CustomerID, TransID, Quantity, Duration) values (?, ?, ?, ?, ?)";
-    private final static String queryRentTrans = "Select * from TRANSACTION_RENT where CustomerID=?";
+    //    private final static String updateRentTable = "insert into RENTS (ItemID, CustomerID, TransID, Quantity, Duration) values (?, ?, ?, ?, ?)";
+//    private final static String queryRentTrans = "Select * from TRANSACTION_RENT where CustomerID=?";
     private PreparedStatement ps;
     private PreparedStatement ps2;
+    private Statement st;
 
     private Connection con;
     private CustomerMenu menu;
 
 
-    public CustomerMenu(String user) {
+    public CustomerMenu(String user, Connection c) {
 
+        con = c;
         menu = this;
         username = user;
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
@@ -81,7 +86,6 @@ public class CustomerMenu {
         int width = screenSize.width;
         frame.setSize(width / 2, height / 2);
 
-        con = createConnection();
         displayItems();
         frame.setContentPane(customerPanel);
         frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
@@ -113,7 +117,6 @@ public class CustomerMenu {
             @Override
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
-                con = createConnection();
                 refreshItems();
             }
         });
@@ -138,7 +141,7 @@ public class CustomerMenu {
                 super.mouseReleased(e);
                 if (e.getClickCount() == 2) {
                     int row = CoursesTable.rowAtPoint(e.getPoint());
-                    int key = (int) CoursesTable.getValueAt(row, 0);
+                    int cid = (int) CoursesTable.getValueAt(row, 0);
 //                    int course = (int) CoursesTable.getValueAt(row, 0);
                     double price = (double) CoursesTable.getValueAt(row, 2);
                     int custard = -1;
@@ -149,17 +152,33 @@ public class CustomerMenu {
                         while (rs.next()) {
                             custard = rs.getInt(1);
                         }
-                        ps = con.prepareStatement(courTransInsert);
-                        ps.setInt(1, key);
-                        ps.setInt(2, custard);
-                        ps.setDouble(3, price);
-                        Date date = new Date();
-                        long time = date.getTime();
-                        Timestamp ts = new Timestamp(time);
-                        ps.setTimestamp(4, ts);
-                        ps.executeUpdate();
-                        refreshItems();
-                        JOptionPane.showMessageDialog(frame, "Thank you for enrolling!");
+                        ps = con.prepareStatement(checkifenrolled);
+                        ps.setInt(1, custard);
+                        ps.setInt(2, cid);
+                        rs = ps.executeQuery();
+                        boolean exist = false;
+                        int check = 0;
+                        while (rs.next()){
+                            check = rs.getInt(1);
+                            JOptionPane.showMessageDialog(frame, "check = "+check);
+                        }
+                        if(check != 0){
+                            exist = true;
+                            JOptionPane.showMessageDialog(frame, "Already enrolled in this course.");
+                        }
+                        if(!exist) {
+                            ps = con.prepareStatement(courTransInsert);
+                            ps.setInt(1, cid);
+                            ps.setInt(2, custard);
+                            ps.setDouble(3, price);
+                            Date date = new Date();
+                            long time = date.getTime();
+                            Timestamp ts = new Timestamp(time);
+                            ps.setTimestamp(4, ts);
+                            ps.executeUpdate();
+                            JOptionPane.showMessageDialog(frame, "Thank you for enrolling!");
+                            refreshItems();
+                        }
                     } catch (Exception ex) {
                         ex.printStackTrace();
                     }
@@ -180,7 +199,7 @@ public class CustomerMenu {
                     double price = (double) SaleTable.getValueAt(row, 2);
                     int quantity = 0;
                     while (quantity > stock || quantity == 0) {
-                        String quantity_box = JOptionPane.showInputDialog(frame, "Please enter the quantity. \n The maximum amount you can rent is " + stock, null);
+                        String quantity_box = JOptionPane.showInputDialog(frame, "Please enter the quantity. \n The maximum amount you can buy is " + stock, null);
                         if (quantity_box.isEmpty()) {
                             break;
                         }
@@ -244,7 +263,7 @@ public class CustomerMenu {
                     int quantity = 0;
                     while (duration > 250 || duration == 0 || quantity > stock || quantity == 0) {
                         String duration_box = JOptionPane.showInputDialog(frame, "How long would you like to rent this item? \n " +
-                                "Please enter your duration in days. The longest duration is 250 days", null);
+                                "Please enter your duration in days. The maximum amount of time you can rent is 250 days", null);
                         if (duration_box.isEmpty()) {
                             break;
                         }
@@ -256,7 +275,7 @@ public class CustomerMenu {
                         }
                         if (duration > 250) {
                             duration = 0;
-                            error_message("Please enter a valid duration between 1 and 25");
+                            error_message("Please enter a valid duration between 1 and 250");
                         }
                         String quantity_box = JOptionPane.showInputDialog(frame, "Please enter the quantity. \n The maximum amount you can rent is " + stock, null);
                         try {
@@ -292,25 +311,8 @@ public class CustomerMenu {
                             long time = date.getTime();
                             Timestamp ts = new Timestamp(time);
                             ps.setTimestamp(5, ts);
+                            ps.setInt(6, duration);
                             ps.executeUpdate();
-                            ps = con.prepareStatement(queryRentTrans);
-                            ps.setInt(1, custard);
-                            rs = ps.executeQuery();
-                            int transid = 0;
-                            while (rs.next()) {
-                                transid = rs.getInt(2);
-                            }
-                            ps = con.prepareStatement(disablefk);
-                            ps.execute();
-                            ps = con.prepareStatement(updateRentTable);
-                            ps.setInt(1, key);
-                            ps.setInt(2, custard);
-                            ps.setInt(3, transid);
-                            ps.setInt(4, quantity);
-                            ps.setInt(5, duration);
-                            ps.executeUpdate();
-                            ps = con.prepareStatement(enablefk);
-                            ps.execute();
                             refreshItems();
                             JOptionPane.showMessageDialog(frame, "Successfully Rented!");
                         } catch (Exception ex) {
@@ -473,7 +475,8 @@ public class CustomerMenu {
             rs = ps.executeQuery();
             while (rs.next()) {
                 Object toAdd[] = {
-                        rs.getInt(1), rs.getInt(3), rs.getDouble(4), rs.getInt(5), rs.getTimestamp(6)
+                        rs.getInt(1), rs.getInt(3), rs.getDouble(4), rs.getInt(5), rs.getTimestamp(6),
+                        rs.getInt(7)
                 };
                 model6.addRow(toAdd);
             }

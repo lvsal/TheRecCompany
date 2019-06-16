@@ -76,13 +76,13 @@ public class Login extends JDialog {
                         ManagerMenu menu = new ManagerMenu(con, type);
                         frame.dispose();
                     } else if (type.equals("Employee")) {
-                        EmployeeMenu inst = new EmployeeMenu();
+                        EmployeeMenu inst = new EmployeeMenu(con, username, type);
                         frame.dispose();
                     } else if (type.equals("Instructor")) {
-                        EmployeeMenu inst = new EmployeeMenu();
+                        EmployeeMenu inst = new EmployeeMenu(con, username, type);
                         frame.dispose();
                     } else if (type.equals("Customer")) {
-                        CustomerMenu cust = new CustomerMenu(username);
+                        CustomerMenu cust = new CustomerMenu(username, con);
                         frame.dispose();
                     } else {
                         JOptionPane.showMessageDialog(null, "Invalid username or password.");
@@ -156,13 +156,13 @@ public class Login extends JDialog {
                         ManagerMenu menu = new ManagerMenu(con, type);
                         frame.dispose();
                     } else if (type.equals("Employee")) {
-                        EmployeeMenu inst = new EmployeeMenu();
+                        EmployeeMenu inst = new EmployeeMenu(con, username, type);
                         frame.dispose();
                     } else if (type.equals("Instructor")) {
-                        EmployeeMenu inst = new EmployeeMenu();
+                        EmployeeMenu inst = new EmployeeMenu(con, username, type);
                         frame.dispose();
                     } else if (type.equals("Customer")) {
-                        CustomerMenu cust = new CustomerMenu(username);
+                        CustomerMenu cust = new CustomerMenu(username, con);
                         frame.dispose();
                     } else {
                         JOptionPane.showMessageDialog(null, "Invalid username or password.");
