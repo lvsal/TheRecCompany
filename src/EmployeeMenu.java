@@ -72,7 +72,6 @@ public class EmployeeMenu {
 
     public EmployeeMenu() {
         menu = this;
-        $$$setupUI$$$();
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         int height = screenSize.height;
         int width = screenSize.width;

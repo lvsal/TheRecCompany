@@ -21,7 +21,6 @@ public class ListGrounds {
 
     public ListGrounds(Connection con, JLabel label, int groundID[]) {
         this.con = con;
-        $$$setupUI$$$();
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         int height = screenSize.height;
         int width = screenSize.width;

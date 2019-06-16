@@ -191,7 +191,7 @@ public class EditItem {
             @Override
             public void mouseReleased(MouseEvent e) {
                 super.mouseReleased(e);
-                int option = JOptionPane.showConfirmDialog(null, "Proceed with changes?");
+                int option = JOptionPane.showConfirmDialog(null, "Add new item?");
                 switch (option) {
                     case 0:
                         String name = textItemName.getText();

@@ -21,6 +21,8 @@ public class EditGrounds {
 
     private final static String queryCheck = "SELECT CourseID from COURSES where Ground = ? AND Available = true";
 
+    private final static String queryInfo = "Select Location from GROUNDS where Ground = ?";
+
     private Connection con;
     private PreparedStatement ps;
 
@@ -66,15 +68,20 @@ public class EditGrounds {
             public void mouseReleased(MouseEvent e) {
                 super.mouseReleased(e);
                 String location = textLocation.getText();
-                try {
-                    ps = con.prepareStatement(queryAdd);
-                    ps.setString(1, location);
-                    ps.executeUpdate();
-                    menu.refreshGrounds();
-                    frame.dispose();
-                } catch (Exception e6) {
-                    JOptionPane.showMessageDialog(null, "Adding new grounds failed.");
-                    e6.printStackTrace(new PrintStream(System.out));
+                int option = JOptionPane.showConfirmDialog(null, "Add location?");
+                switch (option) {
+                    case 0:
+                        try {
+                            ps = con.prepareStatement(queryAdd);
+                            ps.setString(1, location);
+                            ps.executeUpdate();
+                            menu.refreshGrounds();
+                            frame.dispose();
+                        } catch (Exception e6) {
+                            JOptionPane.showMessageDialog(null, "Adding new grounds failed.");
+                            e6.printStackTrace(new PrintStream(System.out));
+                        }
+                        break;
                 }
             }
         });
@@ -89,6 +96,14 @@ public class EditGrounds {
         frame.setSize(width / 2, height / 2);
 
 
+        try {
+            ps = con.prepareStatement(queryInfo);
+            ps.setInt(1, key);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) textLocation.setText(rs.getString(1));
+        } catch (Exception e4) {
+            e4.printStackTrace(new PrintStream(System.out));
+        }
         frame.setContentPane(grndPane);
         frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         frame.setLocationRelativeTo(null);
@@ -122,16 +137,21 @@ public class EditGrounds {
             public void mouseReleased(MouseEvent e) {
                 super.mouseReleased(e);
                 String location = textLocation.getText();
-                try {
-                    ps = con.prepareStatement(queryUpdate);
-                    ps.setString(1, location);
-                    ps.setInt(2, key);
-                    ps.executeUpdate();
-                    menu.refreshGrounds();
-                    frame.dispose();
-                } catch (Exception e6) {
-                    JOptionPane.showMessageDialog(null, "Editing location failed.");
-                    e6.printStackTrace(new PrintStream(System.out));
+                int option = JOptionPane.showConfirmDialog(null, "Edit location?");
+                switch (option) {
+                    case 0:
+                        try {
+                            ps = con.prepareStatement(queryUpdate);
+                            ps.setString(1, location);
+                            ps.setInt(2, key);
+                            ps.executeUpdate();
+                            menu.refreshGrounds();
+                            frame.dispose();
+                        } catch (Exception e6) {
+                            JOptionPane.showMessageDialog(null, "Editing location failed.");
+                            e6.printStackTrace(new PrintStream(System.out));
+                        }
+                        break;
                 }
             }
         });
@@ -139,19 +159,24 @@ public class EditGrounds {
             @Override
             public void mouseReleased(MouseEvent e) {
                 super.mouseReleased(e);
-                try {
-                    if (courseUsed(key, con)) {
-                        throw new Exception();
-                    }
-                    ps = con.prepareStatement(queryDelete);
-                    ps.setInt(1, key);
-                    ps.executeUpdate();
-                    menu.refreshGrounds();
-                    frame.dispose();
-                } catch (Exception e6) {
-                    JOptionPane.showMessageDialog(null, "Deleting ground failed. \n" +
-                            "Grounds may be currently used for a course.");
-                    e6.printStackTrace(new PrintStream(System.out));
+                int option = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete this location?");
+                switch (option) {
+                    case 0:
+                        try {
+                            if (courseUsed(key, con)) {
+                                throw new Exception();
+                            }
+                            ps = con.prepareStatement(queryDelete);
+                            ps.setInt(1, key);
+                            ps.executeUpdate();
+                            menu.refreshGrounds();
+                            frame.dispose();
+                        } catch (Exception e6) {
+                            JOptionPane.showMessageDialog(null, "Deleting ground failed. \n" +
+                                    "Grounds may be currently used for a course.");
+                            e6.printStackTrace(new PrintStream(System.out));
+                        }
+                        break;
                 }
             }
         });

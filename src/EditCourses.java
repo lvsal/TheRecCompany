@@ -23,8 +23,8 @@ public class EditCourses extends JDialog {
 
     private int groundID[] = {-1};
 
-    private final static String queryAdd = "Insert into COURSES (CourseName, Fee, Available, Ground, InstructorID) values (?, ?, ?, ?)";
-    private final static String queryAdd2 = "Insert into COURSES (CourseName, Fee, Available, Ground) values (?, ?, ?)";
+    private final static String queryAdd = "Insert into COURSES (CourseName, Fee, Available, Ground, InstructorID) values (?, ?, ?, ?, ?)";
+    private final static String queryAdd2 = "Insert into COURSES (CourseName, Fee, Available, Ground) values (?, ?, ?, ?)";
 
     private final static String queryEdit = "Update COURSES set CourseName = ?, Fee = ?, Available = ?, Ground = ? , InstructorID = ? where CourseID = ?";
     private final static String queryEdit2 = "Update COURSES set CourseName = ?, Fee = ?, Available = ?, Ground = ? , InstructorID = NULL where CourseID = ?";
@@ -39,6 +39,8 @@ public class EditCourses extends JDialog {
     private final static String queryLoad = "SELECT * from COURSES where CourseID = ?";
 
     private final static String queryInstructor = "Select EmpName from EMPLOYEE where EmpID = ?";
+
+    private final static String queryLocation = "Select Location from GROUNDS where Ground = ?";
 
 
     private Connection con;
@@ -109,8 +111,9 @@ public class EditCourses extends JDialog {
 
                             if (instructorID[0] > -1) {
                                 ps.setInt(5, instructorID[0]);
+                                instructorID[0] = 0;
                             }
-
+                            groundID[0] = 0;
                             PreparedStatement fkc = con.prepareStatement(queryFKC0);
                             fkc.executeUpdate();
                             ps.executeUpdate();
@@ -167,8 +170,14 @@ public class EditCourses extends JDialog {
                     availableBox.setSelectedIndex(1);
                 }
                 ps.setInt(1, rs.getInt(4));
+                PreparedStatement ps2 = con.prepareStatement(queryLocation);
+                ps2.setInt(1, rs.getInt(6));
                 rs = ps.executeQuery();
                 while (rs.next()) labelInst.setText(rs.getString(1));
+                rs = ps2.executeQuery();
+                while (rs.next()) labelGround.setText(rs.getString(1));
+
+
             }
 
         } catch (Exception e3) {
@@ -241,10 +250,11 @@ public class EditCourses extends JDialog {
                             if (instructorID[0] > -1) {
                                 ps.setInt(5, instructorID[0]);
                                 ps.setInt(6, key);
+                                instructorID[0] = 0;
                             } else {
                                 ps.setInt(5, key);
                             }
-
+                            groundID[0] = 0;
                             PreparedStatement fkc = con.prepareStatement(queryFKC0);
                             fkc.executeUpdate();
                             ps.executeUpdate();

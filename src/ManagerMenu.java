@@ -78,7 +78,6 @@ public class ManagerMenu {
     public ManagerMenu(Connection connection, String type) {
 
         menu = this;
-        $$$setupUI$$$();
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         int height = screenSize.height;
         int width = screenSize.width;
@@ -409,6 +408,7 @@ public class ManagerMenu {
                         type
                 };
                 model4.addRow(toAdd);
+                manager = "";
             }
         } catch (Exception e) {
             e.printStackTrace(new PrintStream(System.out));

@@ -76,7 +76,6 @@ public class CustomerMenu {
 
         menu = this;
         username = user;
-        $$$setupUI$$$();
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         int height = screenSize.height;
         int width = screenSize.width;

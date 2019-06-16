@@ -51,6 +51,8 @@ public class EditEmployee extends JDialog {
 
     private final static String queryUpdateCourses = "Update COURSES set InstructorID = NULL where InstructorID = ?";
 
+    private final static String queryUpdateManager = "Update EMPLOYEE set ManagerID = NULL where ManagerID = ?";
+
 
     private Connection con;
     private PreparedStatement ps;
@@ -218,7 +220,7 @@ public class EditEmployee extends JDialog {
             e5.printStackTrace(new PrintStream(System.out));
         }
 
-        if (type.equals("Manager")) btnDelete.setVisible(false);
+        //if (type.equals("Manager")) btnDelete.setVisible(false);
         panelConfirm.setVisible(false);
         panelPassword.setVisible(false);
         panelUsername.setVisible(false);
@@ -275,6 +277,7 @@ public class EditEmployee extends JDialog {
                             if (managerID[0] > -1) {
                                 ps.setInt(6, managerID[0]);
                                 ps.setInt(7, key);
+                                managerID[0] = -1;
                             } else {
                                 ps.setInt(6, key);
                             }
@@ -291,7 +294,10 @@ public class EditEmployee extends JDialog {
                             ps3.executeUpdate();
 
                             if (!type.equals("Instructor")) {
-                                removeInstructor(key, menu);
+                                removeInstructor(key);
+                            }
+                            if (!type.equals("Manager")) {
+                                removeManager(key);
                             }
 
                             menu.refreshEmployees();
@@ -319,7 +325,8 @@ public class EditEmployee extends JDialog {
                             PreparedStatement ps3 = con.prepareStatement(queryDelUser);
                             ps2.setInt(1, key);
                             ps3.setString(1, username);
-                            removeInstructor(key, menu);
+                            removeInstructor(key);
+                            removeManager(key);
                             ps2.executeUpdate();
                             ps3.executeUpdate();
                             JOptionPane.showMessageDialog(null, "Employee has been successfully deleted.");
@@ -348,12 +355,17 @@ public class EditEmployee extends JDialog {
         });
     }
 
-    private void removeInstructor(int key, ManagerMenu menu) throws Exception {
+    private void removeInstructor(int key) throws Exception {
 
         PreparedStatement ps = con.prepareStatement(queryUpdateCourses);
         ps.setInt(1, key);
         ps.executeUpdate();
-        menu.refreshCourses();
+        //menu.refreshCourses();
     }
 
+    private void removeManager(int key) throws Exception {
+        PreparedStatement ps = con.prepareStatement(queryUpdateManager);
+        ps.setInt(1, key);
+        ps.executeUpdate();
+    }
 }

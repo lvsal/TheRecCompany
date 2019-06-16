@@ -21,7 +21,6 @@ public class ListManagers extends JDialog {
 
     public ListManagers(Connection con, JLabel label, int managerID[]) {
         this.con = con;
-        $$$setupUI$$$();
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         int height = screenSize.height;
         int width = screenSize.width;

@@ -21,7 +21,6 @@ public class ListInstructor extends JDialog {
 
     public ListInstructor(Connection con, JLabel label, int instructorID[]) {
         this.con = con;
-        $$$setupUI$$$();
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         int height = screenSize.height;
         int width = screenSize.width;
