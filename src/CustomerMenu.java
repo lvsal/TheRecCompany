@@ -160,7 +160,6 @@ public class CustomerMenu {
                         int check = 0;
                         while (rs.next()){
                             check = rs.getInt(1);
-                            JOptionPane.showMessageDialog(frame, "check = "+check);
                         }
                         if(check != 0){
                             exist = true;

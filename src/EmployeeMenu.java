@@ -151,26 +151,38 @@ public class EmployeeMenu {
                 if (e.getClickCount() == 2) {
                     int row = SaleTable.rowAtPoint(e.getPoint());
                     int key = (int) SaleTable.getValueAt(row, 0);
-                    String stock = JOptionPane.showInputDialog(frame, "Enter new stock", null);
                     int new_stock = 0;
-                    try {
-                        new_stock = Integer.parseInt(stock);
-                    } catch (Exception ex) {
-                        error_message("Could not update stock :( Enter a valid value :|");
-                        ex.printStackTrace(new PrintStream(System.out));
+                    while(new_stock==0){
+                        String stock = JOptionPane.showInputDialog(frame, "Enter new stock", null);
+                        if(stock.isEmpty()){
+                            break;
+                        }
+                        try {
+                            new_stock = Integer.parseInt(stock);
+                        } catch (Exception ex) {
+                            error_message("Could not update stock :( Enter a valid value :|");
+                            ex.printStackTrace(new PrintStream(System.out));
+                        }
+                        if(new_stock == 0){
+                            error_message("Please enter a valid quantity");
+                        }
                     }
-                    try {
-                        ps = con.prepareStatement(updateStockSale);
-                        ps.setInt(1, new_stock);
-                        ps.setInt(2, key);
-                        ps.executeUpdate();
-                        refreshItems();
-                        JOptionPane.showMessageDialog(frame, "Successfully updated stock");
-                    } catch (Exception ex) {
-                        error_message("Could not update stock :( Try again ");
-                        ex.printStackTrace(new PrintStream(System.out));
+
+                    if(new_stock != 0){
+                        try {
+                            ps = con.prepareStatement(updateStockSale);
+                            ps.setInt(1, new_stock);
+                            ps.setInt(2, key);
+                            ps.executeUpdate();
+                            refreshItems();
+                            JOptionPane.showMessageDialog(frame, "Successfully updated stock");
+                        } catch (Exception ex) {
+                            error_message("Could not update stock :( Try again ");
+                            ex.printStackTrace(new PrintStream(System.out));
+                        }
+                        e.consume();
                     }
-                    e.consume();
+
                 }
             }
         });
@@ -183,24 +195,31 @@ public class EmployeeMenu {
                 if (e.getClickCount() == 2) {
                     int row = RentTable.rowAtPoint(e.getPoint());
                     int key = (int) RentTable.getValueAt(row, 0);
-                    String stock = JOptionPane.showInputDialog(frame, "Enter new stock", null);
                     int new_stock = 0;
-                    try {
-                        new_stock = Integer.parseInt(stock);
-                    } catch (Exception ex) {
-                        error_message("Could not update stock :( Enter a valid value :|");
-                        ex.printStackTrace(new PrintStream(System.out));
+                    while(new_stock == 0) {
+                        String stock = JOptionPane.showInputDialog(frame, "Enter new stock", null);
+                        if (stock.isEmpty()){
+                            break;
+                        }
+                        try {
+                            new_stock = Integer.parseInt(stock);
+                        } catch (Exception ex) {
+                            error_message("Could not update stock :( Enter a valid value :|");
+                            ex.printStackTrace(new PrintStream(System.out));
+                        }
                     }
-                    try {
-                        ps = con.prepareStatement(updateRentSale);
-                        ps.setInt(1, new_stock);
-                        ps.setInt(2, key);
-                        ps.executeUpdate();
-                        refreshItems();
-                        JOptionPane.showMessageDialog(frame, "Successfully updated stock!");
-                    } catch (Exception ex) {
-                        error_message("Could not update stock :( Try again ");
-                        ex.printStackTrace(new PrintStream(System.out));
+                    if(new_stock != 0) {
+                        try {
+                            ps = con.prepareStatement(updateRentSale);
+                            ps.setInt(1, new_stock);
+                            ps.setInt(2, key);
+                            ps.executeUpdate();
+                            refreshItems();
+                            JOptionPane.showMessageDialog(frame, "Successfully updated stock!");
+                        } catch (Exception ex) {
+                            error_message("Could not update stock :( Try again ");
+                            ex.printStackTrace(new PrintStream(System.out));
+                        }
                     }
                     e.consume();
                 }
